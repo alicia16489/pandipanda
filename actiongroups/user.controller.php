@@ -1,22 +1,25 @@
 <?php
 
-	require_once('models/userClass.model.php');
-	$users = new Users();
+	require_once('./models/userClass.model.php');
+	$user = new Users();
 
-	if ($action == 'register')
-	{
-		if (empty($_POST))
-		{
+	if ($action == 'register'){
+		if (empty($_POST)){
 			// verif error
 		}
-		elseif (empty($error))
-		{
-			newUser($_POST);
-
-			if ($_POST['statut'] == 'creatif')
-				create_dir($_POST['pseudo']);
-
-			header('location: ?action=activate_profil');
+		elseif (empty($error)){
+			if($elem == "login"){
+				$nb=$user->checkAvailableLogin($post);
+				if($nb == 0){
+					$data['login']=true;
+				}
+			}
+			elseif($elem == "email"){
+				$nb=$user->checkAvailableEmail($post);
+				if($nb == 0){
+					$data['login']=true;
+				}
+			}
 		}
 	}
 	elseif ($action == 'login')
@@ -29,8 +32,6 @@
 		{
 			$_SESSION['id_user'] = $data['id'];
 			session_write_close();
-
-			header('location: ?action=home');
 		}
 	}
 	elseif ($action == 'disconnect')

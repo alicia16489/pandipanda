@@ -13,7 +13,7 @@
 		{
 	        $link = new PDO($DNS, $DB_USER, $DB_PASS);
 	    }
-		  
+		
 		catch(PDOException $e)
 		{
 			echo 'Erreur : '.$e->getMessage().'<br />';

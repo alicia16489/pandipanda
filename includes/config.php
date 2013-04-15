@@ -14,11 +14,12 @@
 							  'edit_profil' => 'user',
 							  'del_profil' => 'user',
 							  'reactivate_profil' => 'user',
-							  'upload_content' => 'content'
+							  'upload_content' => 'content',
+							  'prod' => 'prod'
 	);
 
 	// ACTION PAR DEFAUT
-	$config['default']['action'] = "login";
+	$config['default']['action'] = "prod";
 
 	// TEMPLATE PAR DEFAUT
 	$config['default']['template'] = "login";

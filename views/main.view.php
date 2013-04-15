@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="fr">
-	<head>
-
-	</head>
-
-	<body>
-
-		<?php
-
+<?php
+	include('./templates/head.template.php');
 			// VERIFIE L'EXISTENCE DES VUES
 
 			$template_path = 'templates/'.$template.'.template.php';
@@ -17,7 +9,5 @@
 			else
 				die ('Page '.$template_path.' inexistant ou innaccessible <br /> <a href="index.php">retour &agrave; l\'accueil</a>');
 
-		?>
-
-	</body>
-</html>
+	include('./templates/footer.template.php');
+?>

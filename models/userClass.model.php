@@ -30,6 +30,25 @@
 
             myQuery($query1, 'insert', $param1);
         }
+		
+		// METHODE POUR CHECK LA DISPO DU LOGIN
+		public function checkAvailableLogin($post){
+			$query = "SELECT `login` FROM `users` WHERE `login`= :login";
+			
+			$param = array(":login" =>$post['login']);
+					  
+			$nb=myQuery($query,'select',$param,'count');
+			return $nb;
+		}
+		
+		public function checkAvailableEmail($post){
+			$query = "SELECT `email` FROM `users` WHERE `email`= :email";
+			
+			$param = array(":email" =>$post['email']);
+					  
+			$nb=myQuery($query,'select',$param,'count');
+			return $nb;
+		}
 
         // METHODE QUI ACTIVE COMPTE VIA CLE
         public function activateAccount($email_key)
