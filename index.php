@@ -10,16 +10,16 @@
 	spl_autoload_register('downloadClass');
 
 	$link = connectBDD($DNS, $DB_USER, $DB_PASS);
-
-	// DEFINITION DU TEMPLATE PAR DEFAUT
-	$template = $config['default']['template'];
-
+	
 	// VALEUR DE LA PAGE PAR DEFAUT
 	$action = $config['default']['action'];
-
+	
 	// ROUTER SI ACTION EN URL
 	if (!empty($_GET['action']))
 		$action = $_GET['action'];
+	
+	// DEFINITION DU TEMPLATE PAR DEFAUT
+	$template = $action;
 
 	// VERIFICATION EXISTENCE DE L'ACTION DANS LA CONFIG
 	if (!array_key_exists($action, $config['routes']))

@@ -21,8 +21,6 @@
 	// ACTION PAR DEFAUT
 	$config['default']['action'] = "prod";
 
-	// TEMPLATE PAR DEFAUT
-	$config['default']['template'] = "login";
 
 	// EXTENSIONS D'UPLOAD AUTORISEES
 	$config['extension'] = array("jpeg", 

@@ -2,7 +2,7 @@
 	include('./templates/head.template.php');
 			// VERIFIE L'EXISTENCE DES VUES
 
-			$template_path = 'templates/'.$template.'.template.php';
+			$template_path = './templates/'.$template.'.template.php';
 
 			if (is_readable($template_path) && file_exists($template_path))
 				include($template_path);

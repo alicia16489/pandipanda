@@ -2,22 +2,55 @@
 
 	require_once('./models/userClass.model.php');
 	$user = new Users();
-
+	
 	if ($action == 'register'){
-		if (empty($_POST)){
-			// verif error
-		}
-		elseif (empty($error)){
-			if($elem == "login"){
-				$nb=$user->checkAvailableLogin($post);
-				if($nb == 0){
-					$data['login']=true;
+		if(!empty($_POST)){
+			if(isset($elem)){
+				if($elem == "login"){
+					$nb=$user->checkAvailableLogin($post);
+					if($nb == 0){
+						$data['login']=true;
+					}
+					else{
+						$data['login']=false;
+					}
+				}
+				elseif($elem == "email"){
+					if(($nb=$user->checkAvailableEmail($post)) > 0){
+						$data['email']=true;
+					}
+					else{
+						$data['email']=false;
+					}
 				}
 			}
-			elseif($elem == "email"){
-				$nb=$user->checkAvailableEmail($post);
-				if($nb == 0){
-					$data['login']=true;
+			else{
+				// verif serveur
+				$ready=true;
+				if(!stringCheck($_POST['login'],'alphanum',6,20)){
+					$ready=false;
+				}
+				elseif(($nb=$user->checkAvailableLogin($_POST)) > 0){
+					$ready=false;
+				}
+				elseif(!stringCheck($_POST['password'],'alphanum',8,20)){
+					$ready=false;
+				}
+				elseif($_POST['password'] != $_POST['vpassword']){
+					$ready=false;
+				}
+				elseif(filter_var($_POST, FILTER_VALIDATE_EMAIL)){
+					$ready=false;
+				}
+				elseif(($nb=$user->checkAvailableEmail($_POST)) > 0){
+					$ready=false;
+				}
+				
+				
+				if($ready){
+					if($user->register($_POST)){
+						header("Location: index.php");
+					}
 				}
 			}
 		}

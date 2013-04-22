@@ -12,7 +12,9 @@
 	
 	$action = $_POST['action'];
 	$post = $_POST['post'];
-	$elem = $_POST['elem'];
+	if(isset($_POST['elem'])){
+		$elem = $_POST['elem'];
+	}
 	
 	// VERIFICATION EXISTENCE DE L'ACTION DANS LA CONFIG
 	if (!array_key_exists($action, $config['routes']))

@@ -32,11 +32,14 @@
 
 	   	$sql = $link->prepare($query);
 
-	   	if (!is_null($param))
+	   	if (!is_null($param)){
 	   		$result = $sql->execute($param);
-	   	else
+		}
+	   	else{
 	   		$result = $sql->execute();
-
+		}
+		if(!$result)
+			return false;
 	   	if ($query_type == 'select')
 	   	{
 	   		switch ($return_type)
@@ -55,6 +58,7 @@
 	   		if ($result)
 	    		return $data;
 	   	}
+		return true;
    	}
 
 	// //-- EMAIL CHECK --//
@@ -84,7 +88,7 @@
 		{
 			$key = qrRand(6);
 			$query = "SELECT `email_key` FROM `users` WHERE `email_key` = :email_key";
-			$param = array(':email_key' => $email_key);
+			$param = array(':email_key' => $key);
 
 			while(myQuery($query,'select', $param, 'assoc'))
 			{
@@ -137,7 +141,7 @@
 	}
 
 	//-- STRING CHECK --//
-	function stringCheck($string, $sizeMin, $sizeMax, $type = NULL)
+	function stringCheck($string, $type = NULL, $sizeMin = NULL, $sizeMax = NULL)
 	{
 		if ($type == 'alpha')
 		{//alpha

@@ -6,29 +6,22 @@
         public function register($infos)
         {
             extract($infos);
-
+			$email_key = makeMeAKey('email_key');
             $ip = $_SERVER['REMOTE_ADDR'];
-            $id_rank = getRank($rank);
 
-            $query1 = "INSERT INTO `users`(`user_rank_id`,
-                                           `login`,
-                                           `password`,
-                                           `email`,
-                                           `ipv4`,
-                                           `email_key`,
-                                           `active`) 
-                      VALUES (?,?,?,?,?,?,?)";
+            $query = "INSERT INTO `users`(`login`,`password`,`email`,`ipv4`,`email_key`) VALUES (?,?,?,?,?)";
 
-            $param1 = array($id_rank,
-                            $login,
-                            hashedString($password),
+            $param = array( $login,
+                            stringHash($password),
                             $email,
                             $ip,
-                            $email_key,
-                            "0"
+                            $email_key
             );
-
-            myQuery($query1, 'insert', $param1);
+			
+            if(myQuery($query,'insert',$param)){
+				return true;
+			}
+			
         }
 		
 		// METHODE POUR CHECK LA DISPO DU LOGIN
