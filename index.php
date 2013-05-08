@@ -1,4 +1,7 @@
 <?php
+
+	// OPTIMISATION DU REFERENCEMENT VIA BONNES PRATIQUES GOOGLE
+	header('Content-Type: text/html; charset=UTF-8');
 	
 	// DEMARRAGE DE LA SESSION
 	session_start();
