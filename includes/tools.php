@@ -238,5 +238,20 @@
 
 		return ($data);
 	}
+	
+	// FONCTION DE SELECTION DES VERSIONS LIBRAIRIES JAVASCRIPT (jquery, jquery ui etc.)
+	function jsLibrairies($nom_librairie, $version)
+	{
+		IF($nom_librairie == 'jquery')
+		{
+			echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js"></script>' ;
+		}
+		
+		IF($nom_librairie == 'jquery-ui')
+		{
+			echo '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/'.$version.'/jquery-ui.min.js"></script>' ;
+		}
+		
+	}
 
 ?>

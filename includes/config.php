@@ -36,4 +36,9 @@
     );
 
 	$path = "./files/";
+	
+	// VERSION DES LIBS JS DESIREES
+	$config['js-libs'] = array(	'jquery' => 	'2.0.0',
+								'jquery-ui' => 	'1.10.3'
+							);
 ?>
