@@ -9,6 +9,7 @@
 			<link rel="stylesheet" type="text/css" media="all" href="styles/style.css">
 			
 			<?php 
+				// Inclusion des librairies externes. La fonction est dans tools.php
 				jsLibrairies('jquery', $config['js-libs']['jquery']) ; 
 				jsLibrairies('jquery-ui', $config['js-libs']['jquery-ui']) ; 
 			?>

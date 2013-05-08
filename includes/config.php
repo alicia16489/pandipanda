@@ -4,6 +4,9 @@
 	$DNS = 'mysql:host=localhost;dbname=openentity';
 	$DB_USER = 'root';
 	$DB_PASS = '';
+	
+	// Suffixe de sécurisation sha en cas de compromission de la BDD
+	$config['sha'] = 'sqb7ndkdj4eprd558dz4' ;
 
 	// CONFIG DES ACTIONS
 	$config['routes'] = array('home' => 'user',

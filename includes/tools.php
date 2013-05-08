@@ -192,8 +192,13 @@
 		
 		
 	//-- STRING HASH --//
-	function stringHash($string)
+	function stringHash($string, $suffixe = FALSE) //  $sufixe = Securisation de résistance aux dictionnaires de hash en cas de compromission de la BDD
 	{
+		IF ($prefixe != FALSE) // Securisation via usage de suffixe
+		{
+		$string.= $suffixe ;
+		}
+		
 		$hashedString = hash("sha256", $string);
 		
 		return ($hashedString);
