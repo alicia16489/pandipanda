@@ -196,7 +196,7 @@
 	{
 		IF ($prefixe != FALSE) // Securisation via usage de suffixe
 		{
-		$string.= $suffixe ;
+		$string.= $suffixe ; // Méthode de concaténation
 		}
 		
 		$hashedString = hash("sha256", $string);
