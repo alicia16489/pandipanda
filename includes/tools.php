@@ -249,7 +249,10 @@
 	{
 		IF($nom_librairie == 'jquery')
 		{
-			echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js"></script>' ;
+			// echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js"></script>' ;
+			
+			// Patch DEV pour Benoit :
+			echo '<script src="js/jquery-2.0.0.min.js"></script>' ;
 		}
 		
 		IF($nom_librairie == 'jquery-ui')
