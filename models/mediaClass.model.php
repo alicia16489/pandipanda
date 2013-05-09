@@ -1,174 +1,96 @@
 <?php
 	
-	class Medias extends Mother
-	{
-		// METHODE QUI CREE LE DOSSIER OU SERONT STOCKE LES FILES D'UN USER
-		public function createDir($name)
-		{
-			global $path;
-
-			mkdir($path.stringHash($name));
-		}
-
-		// METHODE DE POST DE CONTENU IMG ET AUDIO ET BD
-		public function uploadMedia($dest, $file, $max_size, $name, $extension)
-		{
-			if (stringCheck($name, 3, 32, 'alpha') == TRUE)
-			{
-				if ($file['error'] == 0) // on vérifie si les erreurs en rapport au fichier sont absentes
-				{
-					if ($file['size'] < $max_size) // on vérifie si la taille est pas trop grosse
-					{
-						$file_ini = pathinfo($file['name']); // on récupère les infos fichiers
-						$file_ext = strtolower($file_ini['extension']); // on chope l'extension
-
-						if (in_array($file_ext, $extension))  // on vérifie que l'extension est bien présente dans le tableau de celles autorisées
-						{
-						    $dest = $path;
-					    	$new_name = $name.".".$file_ext;
-
-				   			if (move_uploaded_file($file["tmp_name"], $dest.'/'.$new_name)) // on bouge le fichier de son dossier temporaire pour le bouger 
-				    			return TRUE;
-					    }
-					    else
-					    	return FALSE;
+	class Media{
+		public function getMediasBySearch($post){
+			print_r($post);
+			$keywords=filtre($post['search'],' ');
+			$id_keywords=array();
+			$param=array();
+			
+			
+			if(!empty($post['search'])){ 
+				// get id from user keywords
+				$query="SELECT name,id FROM keywords a WHERE ";
+				foreach($keywords as $key => $keyword){
+					if($key != 0){
+						$query .= " OR ";
 					}
-					else
-				    	return FALSE;
+					$query .= "a.name = :".$keyword."";
+					$param[":".$keyword] = $keyword;
 				}
-				else
-			    	return FALSE;
+				$data=myQuery($query,'select',$param,'assoc');
 			}
-			else
-				return FALSE;
+			
+			// get medias from id keywords and filter
+			$count=0;
+			$param=array();
+			$query="SELECT a.id, COUNT(a.id) 'nb_keywords', title, resum, active, c.name 'category', b.name 'type'
+			FROM  medias a 
+			LEFT JOIN media_types b ON a.media_types_id = b.id 
+			LEFT JOIN category c ON a.id_category = c.id 
+			LEFT JOIN medias_has_admin_labels d ON a.id = d.medias_id 
+			LEFT JOIN medias_has_keywords e ON a.id = e.medias_id 
+			";
+			if($post['type'] != 0 || $post['category'] != 0 || !empty($post['search']) || isset($post['labels'])){
+				$query .="WHERE ";
+			}
+			if($post['type'] != 0){ 
+				$query .= "b.id=".$post['type'];
+				$count++;
+			}
+			if($post['category'] != 0){ 
+				if($count != 0){
+					$query .= " AND ";
+				}
+				$query .= " c.id=".$post['category'];
+				$count++;
+			}
+			if(isset($post['labels'])){
+				if($count != 0){
+					$query .= " AND ";
+				}
+				$query .= "(";
+				foreach($post['labels'] as $key => $label_id){
+					if($key != 0){
+						$query .= " OR ";
+					}
+					$query .= " d.admin_labels_id = :".$label_id;
+					$param[":".$label_id] = $label_id;
+				}
+				$query .= ")";
+				$count++;
+			}
+			if(!empty($post['search'])){ 
+				if($count != 0){
+					$query .= " AND ";
+				}
+				$query .= "(";
+				if(isset($data[0])){
+					foreach($data as $key => $keyword){
+						if($key != 0){
+							$query .= " OR ";
+						}
+						$query .= " e.keywords_id = :".$keyword['name'];
+						$param[":".$keyword['name']] = $keyword['id'];
+					}
+					
+				}
+				else{
+					$query .= " e.keywords_id = :".$data['name'];
+					$param[":".$data['name']] = $data['id'];
+				}
+				$query .= ")";
+				$count++;
+			}
+			$query .= " GROUP BY a.id";
+			$query .= " ORDER BY COUNT(a.id) DESC, title";
+			print_r($query);
+			print_r($param);
+			$data=myQuery($query,'select',$param,'assoc');
+			return $data;
 		}
-
-		// METHODE D'ACTIVATION DE CONTENUE
-		public function activateMedia($name)
-		{
-	        if (is_array($name))
-	        {
-	            foreach ($name as $value)
-	            {
-	                $id = getId($value, 'media');
-	                $query = "UPDATE `medias` SET `active` = :active WHERE `id` = :id";
-	                $param = array(":active" => "1",
-	                               ":id" => $id
-	                );
-
-	                myQuery($query, 'update', $param);
-	            }
-	        }
-	        else
-	        {
-	            $id = getId($name, 'media');
-	            $query = "UPDATE `medias` SET `active` = :active WHERE `id` = :id";
-	            $param = array(":active" => "1",
-	                           ":id" => $id
-	            );
-	            
-	            myQuery($query, 'update', $param);
-	        }
-		}
-
-		// METHODE QUI SUPPRIME LE/LES CONTENU(S)
-		public function deleteMedia($file = NULL, $type = NULL, $id = NULL)
-		{
-			if (is_null($type) && is_null($id) && !is_null($file))
-			{
-				parent::deleteMedia($file);
-			}
-			elseif ($type == 'user')
-			{
-				parent::deleteMedia(NULL, $type, $id);
-			}
-			elseif ($type == 'team')
-			{
-				parent::deleteMedia(NULL, $type, $id);
-			}
-		}
-
-		// METHODE D'ENREGISTREMENT EN BDD DES POST
-		public function insertMedia($infos, $file == NULL, $team = NULL)
-		{
-			extract($infos);
-
-			if (!is_null($file))
-			{
-				$file_ini = pathinfo($file['name']);
-
-				if (empty($name))
-					$name = $file_ini['filename']; // name sans l'extension
-			}
-
-			if (is_null($team))
-			{
-				if (!empty($link))
-				{
-					$query = "INSERT INTO `medias`(`title`,
-												   `type`,
-												   `tag`,
-												   `resum`)  
-							  VALUES (?,?,?,?,?,?,?)";
-
-					$param = array($title,
-							  	   $type,
-							   	   $tag,
-							       $resum,
-							       $link
-					);
-				}
-				else
-				{
-					$query = "INSERT INTO `medias`(`title`,
-												   `type`,
-												   `tag`,
-											       `resum`,
-												   `size`) 
-							  VALUES (?,?,?,?,?,?)";
-
-					$param = array($title,
-								   $type,
-								   $tag,
-								   $resum
-					);
-				}
-			}
-			else
-			{
-				if (!empty($link))
-				{
-					$query = "INSERT INTO `medias`(`title`,
-												   `type`,
-												   `tag`,
-												   `resum`) 
-							  VALUES (?,?,?,?,?,?,?)";
-
-					$param = array($title,
-							  	   $type,
-							   	   $tag,
-							       $description,
-							       $link
-					);
-				}
-				else
-				{
-					$query = "INSERT INTO `medias`(`title`,
-												   `type`,
-												   `tag`,
-												   `resum`) 
-							  VALUES (?,?,?,?,?,?)";
-
-					$param = array($title,
-								   $type,
-								   $tag,
-								   $description,
-					);
-				}
-			}
-
-			myQuery($query, 'insert', $param);
-		}
+	
 	}
+		
 
 ?>

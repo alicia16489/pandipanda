@@ -1,7 +1,7 @@
 <?php
 	// DEMARRAGE DE LA SESSION
 	session_start();
-	
+	header('Content-Type: text/html; charset=UTF-8'); //encode
 	include ('./includes/config.php');
 	include ('./includes/tools.php');
 	

@@ -2,11 +2,12 @@
 	
     class Users extends Mother
     {
+		
         // METHODE CREATION NOUVEL UTILISATEUR
         public function register($infos)
         {
             extract($infos);
-			$email_key = makeMeAKey('email_key');
+			$email_key = makeMeAKey();
             $ip = $_SERVER['REMOTE_ADDR'];
 
             $query = "INSERT INTO `users`(`login`,`password`,`email`,`ipv4`,`email_key`) VALUES (?,?,?,?,?)";
@@ -18,7 +19,7 @@
                             $email_key
             );
 			
-            if(myQuery($query,'insert',$param)){
+            if(myQuery($query,null,$param)){
 				return true;
 			}
 			
@@ -118,25 +119,26 @@
         }
 
     	// METHODE VERIFIANT LA CONNECTION D'UN UTILISATEUR
-    	public function checkUserLogin($infos)
-    	{
+    	public function checkUserLogin($infos){
       		extract($infos);
-      
-      		$query = "SELECT `id` 
-                      FROM `users` 
+			
+      		$query = "SELECT `id` FROM `users` 
                       WHERE `password` = :password AND (`login` = :login OR `email` = :login)";
 
       		$param = array(':login' => $login, 
-                           ':password' => stringHashed($password)
+                           ':password' => stringHash($password)
             );
 
       		$check = myQuery($query, 'select', $param, 'count');
             $data = myQuery($query, 'select', $param, 'assoc');
-      
-      		if ($check > 0)
-      			return $data;
-      		else
-      			return FALSE;
+      		if ($check > 0){
+      			$_SESSION['id_user']=$data['id'];
+				session_write_close();
+				return true;
+			}
+      		else{
+      			return false;
+			}
       	}
 
         // --HERITAGE METHODE MERE-- METHODE DE RECUPERARION D'INFO PROFIL

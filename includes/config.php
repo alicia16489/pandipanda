@@ -1,29 +1,39 @@
 <?php
 
 	// CONFIG DE LA BDD
-	$DNS = 'mysql:host=localhost;dbname=openentity';
+	$DNS = 'mysql:host=localhost;dbname=openentity;charset=utf8';
 	$DB_USER = 'root';
 	$DB_PASS = '';
-	
-	// Suffixe de securisation sha en cas de compromission de la BDD
-	$config['sha'] = 'sqb7ndkdj4eprd558dz4' ;
 
 	// CONFIG DES ACTIONS
-	$config['routes'] = array('home' => 'user',
-							  'register' => 'user',
-							  'login' => 'user',
-							  'disconnect' => 'user',
-							  'activate_profil' => 'user',
-							  'edit_profil' => 'user',
-							  'del_profil' => 'user',
-							  'reactivate_profil' => 'user',
-							  'upload_content' => 'content',
-							  'prod' => 'prod'
+	$config['routes'] = array(
+							'home' => 'media',
+							'media_search' => 'media',
+							'upload_content' => 'media',
+							
+							// user life
+							'register' => 'user',
+							'login' => 'user',
+							
+							'disconnect' => 'user',
+							
+							// user control
+							'edit_profil' => 'user',
+							'del_profil' => 'user',
+							'activate_profil' => 'user',
+							'reactivate_profil' => 'user',
+							
+							
 	);
+	
+	// array filtre
+	$out_words=array ("le","la","lu","lo","ly","un","une","des","les");
 
 	// ACTION PAR DEFAUT
-	$config['default']['action'] = "prod";
-
+	$config['default']['action'] = "home";
+	
+	// setup
+	$user_setup='./includes/setups/user.setup.php';
 
 	// EXTENSIONS D'UPLOAD AUTORISEES
 	$config['extension'] = array("jpeg", 
@@ -39,9 +49,4 @@
     );
 
 	$path = "./files/";
-	
-	// VERSION DES LIBS JS DESIREES
-	$config['js-libs'] = array(	'jquery' => 	'2.0.0',
-								'jquery-ui' => 	'1.10.3'
-							);
 ?>

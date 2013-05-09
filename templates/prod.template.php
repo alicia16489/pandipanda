@@ -4,4 +4,5 @@
 	<li><a href="index.php?action=admin">member panel</a></li>
 	<li><a href="index.php?action=member">admin panel</a></li>
 	<li><a href="index.php?action=flux">flux</a></li>
+	<li><a href="index.php?action=side_search">Search side</a></li>
 </ul>

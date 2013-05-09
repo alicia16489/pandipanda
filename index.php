@@ -1,41 +1,34 @@
 <?php
-
-	// OPTIMISATION DU REFERENCEMENT VIA BONNES PRATIQUES GOOGLE
-	header('Content-Type: text/html; charset=UTF-8');
-	
-	// DEMARRAGE DE LA SESSION
+	//setup
 	session_start();
-
-	include ('includes/config.php');
-	include ('includes/tools.php');
-	
-	// AUTO-LLOAD DES CLASS
+	date_default_timezone_set("Europe/Paris"); // set date default timezone
+	header('Content-Type: text/html; charset=UTF-8'); //encode
+	include ('./includes/config.php');
+	include ('./includes/tools.php');
 	spl_autoload_register('downloadClass');
 
+	// bdd connect
 	$link = connectBDD($DNS, $DB_USER, $DB_PASS);
 	
-	// VALEUR DE LA PAGE PAR DEFAUT
-	$action = $config['default']['action'];
-	
-	// ROUTER SI ACTION EN URL
+	// get
 	if (!empty($_GET['action']))
 		$action = $_GET['action'];
 	
-	// DEFINITION DU TEMPLATE PAR DEFAUT
-	$template = $action;
-
-	// VERIFICATION EXISTENCE DE L'ACTION DANS LA CONFIG
+	// default action & template
+	$action = $config['default']['action'];
+	$template_main = $action;
+	$setup=true;
+	$template_left=null;
+	
+	// action control
 	if (!array_key_exists($action, $config['routes']))
 		die ("L'action demand&eacute;e n'existe pas. <br /> <a href='index.php'>retour &agrave; l'accueil</a>");
+		
 
-	// APPEL DU SOUS-CONTROLLER
-	$actiongroups = 'actiongroups/'.$config['routes'][$action].'.controller.php';
-	if (is_readable($actiongroups))
-		include ($actiongroups);
-	else
-		die ('Le fichier '.$actiongroups.' n\'existe pas ou est innaccessible');
+	// rooter action with file control
+	include($route=route($action));
 
-	// APPEL DE LA VUE
+	// main view : template including
 	include ("views/main.view.php");
 
 ?>

@@ -1,9 +1,44 @@
 <?php
+	function include_template($template){
+		// VERIFIE L'EXISTENCE DES VUES
+			$template_path = './templates/'.$template.'.template.php';
+
+			if (is_readable($template_path) && file_exists($template_path))
+				return $template_path;
+			else
+				die ('Page '.$template_path.' inexistant ou innaccessible <br /> <a href="index.php">retour &agrave; l\'accueil</a>');
+
+	}
+	
+	function filtre($string,$delimiter){
+		global $out_words;
+		$string = str_replace("'"," ",$string);
+		$words = explode($delimiter,$string);
+		$keywords = array();
+			
+		foreach($words as $word){
+			if(!in_array($word,$out_words) && strlen($word) > 2){
+				$keywords[]=$word;
+			}
+		}
+		
+		return $keywords;
+	}
+
+	function route($action){
+		global $config;
+	
+		$actiongroups = 'actiongroups/'.$config['routes'][$action].'.controller.php';
+		if (is_readable($actiongroups))
+			return $actiongroups;
+		else
+			die ('Le fichier '.$actiongroups.' n\'existe pas ou est innaccessible');
+	}
 
 	// FONCTION D'AUTOCHARGEMENT DES CLASSES
 	function downloadClass($class)
 	{
-		require ('class/'.$class.'.class.php');
+		require('class/'.$class.'.class.php');
 	}
 
 	// FONCTION DE CONNECTION A LA BDD
@@ -26,10 +61,8 @@
 	}
 
 	// FONCTION REQUETE
-	function myQuery($query, $query_type = NULL, $param = NULL, $return_type = NULL)
-	{
+	function myQuery($query, $query_type = NULL, $param = NULL, $return_type = NULL){
    		global $link;
-
 	   	$sql = $link->prepare($query);
 
 	   	if (!is_null($param)){
@@ -38,21 +71,23 @@
 	   	else{
 	   		$result = $sql->execute();
 		}
-		if(!$result)
+		if(!$result){
+			print_r($sql->errorInfo());
 			return false;
+		}
 	   	if ($query_type == 'select')
 	   	{
 	   		switch ($return_type)
 	   		{
 	    		case 'count':
 		    		$data = $sql->rowCount();
-		    		break;
+		    	break;
 	    		case 'assoc':
 	     			if(($sql->rowCount()) == 1)
 	      				$data = $sql->fetch(PDO::FETCH_ASSOC);
 	     			else
 	      				$data = $sql->fetchAll(PDO::FETCH_ASSOC);
-	    			break;
+	    		break;
 	   		}
 
 	   		if ($result)
@@ -82,10 +117,8 @@
 	//-- LETTER GENERATOR --//
 		
 	//-- KEYGENERATOR --//
-	function makeMeAKey($keyType)
+	function makeMeAKey()
 	{
-		if ('email_key')
-		{
 			$key = qrRand(6);
 			$query = "SELECT `email_key` FROM `users` WHERE `email_key` = :email_key";
 			$param = array(':email_key' => $key);
@@ -96,32 +129,7 @@
 			}
 
 			return $key;
-		}
 	}
-
-	function makeMeAKeyTest($keyType)
-	{
-		if ('email_key')
-		{
-			$key = qrRand(6);
-
-			$queryS = "SELECT `key` FROM `test` WHERE `key` = :key";
-			$param = array(":key" => $key);
-
-			while(myQuery($queryS, 'select', $param, 'assoc'))
-			{
-				$key = qrRand(6);
-			}
-
-			$queryI = "INSERT INTO `test`(`key`) VALUES (:key)";
-			$param = array(":key" => $key);
-
-			myQuery($queryI, 'insert', $param);
-
-			return $key;
-		}
-	}
-	//-- KEYGENERATOR --//
 
 	// FONCTION POUR RECUPERER USER OU TEAM ID
 	function getId($name, $type)
@@ -192,13 +200,8 @@
 		
 		
 	//-- STRING HASH --//
-	function stringHash($string, $suffixe = FALSE) //  $sufixe = Securisation de résistance aux dictionnaires de hash en cas de compromission de la BDD
+	function stringHash($string)
 	{
-		IF ($prefixe != FALSE) // Securisation via usage de suffixe
-		{
-		$string.= $suffixe ; // Méthode de concaténation
-		}
-		
 		$hashedString = hash("sha256", $string);
 		
 		return ($hashedString);
@@ -242,21 +245,6 @@
 		$data = myQuery($query, 'select', $param, 'count');
 
 		return ($data);
-	}
-	
-	// FONCTION DE SELECTION DES VERSIONS LIBRAIRIES JAVASCRIPT (jquery, jquery ui etc.)
-	function jsLibrairies($nom_librairie, $version)
-	{
-		IF($nom_librairie == 'jquery')
-		{
-			echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js"></script>' ;
-		}
-		
-		IF($nom_librairie == 'jquery-ui')
-		{
-			echo '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/'.$version.'/jquery-ui.min.js"></script>' ;
-		}
-		
 	}
 
 ?>
