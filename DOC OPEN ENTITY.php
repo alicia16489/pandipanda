@@ -1,4 +1,6 @@
 <?php
+
+exit() ; // Sécurisation de la Doc.
 	
 	DOC OPEN ENTITY
 
@@ -72,9 +74,10 @@
 		return :
 			TRUE si la chaine respecte les paramètres. Sinon FALSE.
 
-		function stringHash($string) Hash une chaine de caractère en sha256
+		function stringHash($string, $suffixe = FALSE) Hash une chaine de caractère en sha256
 		paramètre :
 			$string => la string à hasher.
+			$suffixe => concaténation d un suffixe de résistance aux dictionnaires sha en cas de comprommission de la base. Si = FALSE, aucun suffixe n est utilise. La variable $config['sha'] contient le suffixe classique utilisé sur la plateforme de prod.
 		return :
 			la chaine hashée.
 
@@ -93,4 +96,7 @@
 			return 0 si inactif ou 1 si actif
 
 		function getRank($rank) récupère lid du rang utilisateur
+		
+		function jsLibrairies($nom_librairie, $version)
+			echo // la librairie javascript récalmée dans le head html. Possibilité de choisir la version désirée. Par défault, l'array $config['js-libs'] contient les versions utilisées et est configuarable dans config.php
 	}

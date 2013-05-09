@@ -246,5 +246,26 @@
 
 		return ($data);
 	}
+<<<<<<< HEAD
+=======
+	
+	// FONCTION DE SELECTION DES VERSIONS LIBRAIRIES JAVASCRIPT (jquery, jquery ui etc.)
+	function jsLibrairies($nom_librairie, $version)
+	{
+		IF($nom_librairie == 'jquery')
+		{
+			// echo '<script src="//ajax.googleapis.com/ajax/libs/jquery/'.$version.'/jquery.min.js"></script>' ;
+			
+			// Patch DEV pour Benoit :
+			echo '<script src="js/jquery-2.0.0.min.js"></script>' ;
+		}
+		
+		IF($nom_librairie == 'jquery-ui')
+		{
+			echo '<script src="//ajax.googleapis.com/ajax/libs/jqueryui/'.$version.'/jquery-ui.min.js"></script>' ;
+		}
+		
+	}
+>>>>>>> 4cedd36909b824ac6d8e9240beed588e30245cbf
 
 ?>
