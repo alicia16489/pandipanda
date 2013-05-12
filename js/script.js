@@ -12,16 +12,22 @@ var OE = {
 		launch : function (data) {
 			var url = './index.ajax.php';
 			var toExecute = data['action'];
-			var param = data['elem'];
+			var elem = data['elem'];
+			var param = data['param'];
 			
-			if(param == "null"){
+			if(elem == undefined && param == undefined){
 				$.post(url, data, function(data) { 
 					OE.ajax.callback[toExecute](data);
 				},'json');
 			}
+			else if (param == undefined){
+				$.post(url, data, function(data) { 
+					OE.ajax.callback[toExecute][elem](data);
+				},'json');
+			}
 			else{
 				$.post(url, data, function(data) { 
-					OE.ajax.callback[toExecute][param](data);
+					OE.ajax.callback[toExecute][elem][param](data);
 				},'json');
 			}
 		},
@@ -100,7 +106,6 @@ var OE = {
 			var postObj = {
 				requete : 'action',
 				action : 'media_search',
-				elem : 'null',
 				post : {
 					search : text,
 					type : type,
@@ -111,6 +116,25 @@ var OE = {
 			OE.ajax.launch(postObj);
 			
 			
+		},
+		
+		admin_panel : {
+			users : {
+				getAll : function (order,sens){
+				var postObj = {
+					requete : 'action',
+					action : 'admin_panel',
+					elem : 'users',
+					param : 'getAll',
+					order : 'login',
+					sens : 'ASC',
+					post : {
+						empty : 'empty'
+					}
+				};
+				OE.ajax.launch(postObj);
+				}
+			},
 		},
 		
 		callback : {
@@ -152,7 +176,7 @@ var OE = {
 			},
 			
 			media_search : function (data) {
-				console.log(data.length);
+				$("#search_list_result").empty();
 				$("#search_list_result").append('<table></table>');
 				if(data.length != 0){
 					if(typeof data[0] == "object"){
@@ -171,6 +195,14 @@ var OE = {
 				else{
 					// no result
 				}
+			},
+			
+			admin_panel : {
+				users : {
+					getAll : function (data){
+						OE.display.animation.admin_panel.list_users(data);
+					}
+				}
 			}
 		},
 	},
@@ -179,12 +211,27 @@ var OE = {
 		
 		animation : {
 			register : {
-				login : function (){
-			
-				},
-				
 				form : function (){
 					$("#register_wrap").fadeOut('slow');
+				}
+			},
+
+			search_col_size : function(){
+					$('#side_search').height($(window).height()-140)
+			},
+			
+			admin_panel : {
+				display : function() {
+					
+				},
+				list_users : function (data) {
+					$("#list_membre table").empty();
+					$("#list_membre table").append('<tr><td>login</td><td>email</td><td>Rank</td><td>Ban</td></tr>');
+					for(var i=0; i<data.length; i++){
+						$("#list_membre table").append('<tr id=user_'+data[i]['id']+'><td>'+data[i]['login']+'</td></tr>');
+						$("#user_"+data[i]['id']).hide();
+						$("#user_"+data[i]['id']).fadeIn();
+					}
 				}
 			},
 			
@@ -205,7 +252,7 @@ var OE = {
 					span.css("color", "#FF5656");
 				}
 				else{
-					span.text("Cant be empty!");
+					span.text("Can't be empty!");
 					span.css("color", "#FF5656");
 				}
 			},
@@ -230,7 +277,7 @@ var OE = {
 			tab[id]= new Array();
 			tab[id]['state']=true;
 			
-			//on control l'id de l'element remplis par l'utilisateur pour choisir le bon traitement d'affichage
+			//on contrôle l'id de l'element rempli par l'utilisateur pour choisir le bon traitement d'affichage
 			switch(id){
 				case 'login':
 					if(data.val().length < 6){ // si text non vide et inférieur à 6 alors..
@@ -313,8 +360,17 @@ var OE = {
 	});
 	
 	$('#search_button').click(function(){
-		$("#search_list_result").empty();
 		OE.ajax.search();
+	});
+
+	OE.display.animation.search_col_size();
+
+	$(window).resize(function(){
+		OE.display.animation.search_col_size();
+	});
+	
+	$("#admin_panel").click(function(){
+		OE.ajax.admin_panel.users.getAll();
 	});
 
 })(jQuery);

@@ -18,8 +18,7 @@
 							'disconnect' => 'user',
 							
 							// user control
-							'edit_profil' => 'user',
-							'del_profil' => 'user',
+							'admin_panel' => 'user',
 							'activate_profil' => 'user',
 							'reactivate_profil' => 'user',
 							

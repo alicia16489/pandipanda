@@ -15,6 +15,15 @@
 	if(isset($_POST['elem'])){
 		$elem = $_POST['elem'];
 	}
+	if(isset($_POST['param'])){
+		$param = $_POST['param'];
+	}
+	if(isset($_POST['order'])){
+		$order = $_POST['order'];
+	}
+	if(isset($_POST['sens'])){
+		$sens = $_POST['sens'];
+	}
 	
 	// VERIFICATION EXISTENCE DE L'ACTION DANS LA CONFIG
 	if (!array_key_exists($action, $config['routes']))

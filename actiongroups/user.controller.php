@@ -1,10 +1,4 @@
 <?php
-	if(isset($_SESSION['id_user'])){
-		
-		if($setup){
-			
-		}
-	}
 	require_once('./models/userClass.model.php');
 	$user = new Users();
 	
@@ -64,12 +58,7 @@
 	elseif ($action == 'login'){
 		print_r($_SESSION);
 		if(!empty($_POST) && $user->checkUserLogin($_POST)){
-			/* if(){
-			
-			}
-			else{
 				header("Location: index.php"); die();
-			} */
 		}
 	}
 	elseif ($action == 'disconnect'){
@@ -77,12 +66,14 @@
 		session_destroy();
 		header('location: index.php');
 	}
-	elseif ($action == 'activate_profil'){
-		
+	elseif ($action == 'admin_panel'){
+		$table = new Table($elem);
+		$data=$table->getAll($elem,$order,$sens);
+		if($elem == "users"){
+			
+		}
 	}
-	elseif ($action == 'edit_profil'){
-		
-	}
+	
 	
 	
 

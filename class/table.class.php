@@ -23,6 +23,19 @@ class Table{
 		return $this->dataFields;
 	}
 	
+	public function getAll($elem,$order,$sens){
+		$param = " ORDER BY ".$order." ".$sens;
+		
+		if($elem == "users"){
+			$query="SELECT *, b.name 'rank' FROM ".$this->tableName." a, users_rank b WHERE a.users_rank_id=b.id".$param."";
+		}
+		elseif($elem == "medias"){
+			$query="SELECT *, b.name FROM ".$this->tableName.$param."";
+		}
+		$data=myQuery($query,'select',null,'assoc');
+		return $data;
+	}
+	
 	public function setDataFields($row,$field){
 		$this->dataFields[$row[$this->primaryKey]] = $row[$field];
 	}
