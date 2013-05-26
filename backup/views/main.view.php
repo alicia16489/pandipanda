@@ -1,0 +1,11 @@
+<?php
+	include('./templates/head.template.php');
+	include('./templates/header.template.php');
+	include('./templates/login.template.php');
+	include('./templates/register.template.php');
+	include('./templates/rightbar.template.php');
+	include(include_template($template_left));
+	include(include_template($template_main));
+	include('./templates/admin_panel.template.php');
+	include('./templates/footer.template.php');
+?>
